@@ -6,7 +6,7 @@ For web content to be available for NLP applications or for use in training LLMs
 ## Solution
 A suite of Python classes leveraging (scrapy)[https://scrapy.org/] to scrape content from the following sources:
 - bbc.co.uk
-  
+
 Content is then persisted to Bigquery. Articles from various sources are scraped and imported into the articles table.
 
 All ETL tasks are orchestrated using Prefect.

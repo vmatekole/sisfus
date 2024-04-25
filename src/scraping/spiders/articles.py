@@ -1,15 +1,12 @@
-from scrapy import Spider
-
-from rich import print
 import scrapy
 import scrapy.http
+from rich import print
+from scrapy import Spider
 
 
 class BBC(Spider):
-    name = "bbc_articles"
-    start_urls = [
-        'https://authory.com/ZariaGorvett'
-    ]
+    name = 'bbc_articles'
+    start_urls = ['https://authory.com/ZariaGorvett']
 
     def parse(self, response):
         article_titles = response.css('h2::text').getall()
@@ -18,4 +15,3 @@ class BBC(Spider):
         # yield from response.(article_titles, callback=self.parse_titles)
         # book_links = response.css("article a")
         # yield from response.follow_all(book_links, callback=self.parse_book)
-

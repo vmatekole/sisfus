@@ -8,6 +8,6 @@ load_dotenv()
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file_encoding='utf-8')
-    
+
 
 ConfigSettings = Settings(_env_file=os.environ['SETTINGS_ENV_FILE'])

@@ -24,3 +24,6 @@ dev = [
 ]
 [tool.pdm]
 distribution = false
+
+[tool.black]
+skip-string-normalization = true

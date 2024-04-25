@@ -23,4 +23,5 @@ def init() -> Logger:
         hdlr.setLevel(level)
     return rootLogger
 
+
 logger: Logger = init()
