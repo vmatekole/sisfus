@@ -1,0 +1,26 @@
+[project]
+name = "scraper"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Victor Matekole", email = "github@matekole.com"},
+]
+dependencies = [
+    "pydantic>=2.7.1",
+    "scrapy>=2.11.1",
+    "dotenv>=0.0.5",
+    "pydantic-settings>=2.2.1",
+    "scrapy-fake-useragent>=1.4.4",
+]
+requires-python = "==3.10.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[project.optional-dependencies]
+dev = [
+    "rich>=13.7.1",
+    "pytest>=8.1.1",
+]
+[tool.pdm]
+distribution = false
