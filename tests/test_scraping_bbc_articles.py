@@ -7,7 +7,7 @@ class TestAuthoryScraping:
     def test_getting_authory_article_links(self, authory_content_response):
         input = authory_content_response
 
-        result = Article.parse_authory_json(authory_content_response)
+        result: list[Article] = Article.parse_authory_json(authory_content_response)
 
         assert isinstance(result[0], Article)
         assert (
