@@ -25,5 +25,9 @@ dev = [
 [tool.pdm]
 distribution = false
 
+[tool.pytest.ini_options]
+pythonpath = ["./src"]
+log_cli = true
+
 [tool.black]
 skip-string-normalization = true
