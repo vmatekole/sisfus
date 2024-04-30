@@ -4,12 +4,12 @@ from lxml import etree
 from rich import print
 from scrapy import Spider
 
+from models.web_pages import Authory
+
 
 class BBC(Spider):
     name = 'bbc_articles'
-    start_urls = [
-        'https://www.bbc.com/future/article/20240202-what-happened-to-the-codpiece'
-    ]
+    start_urls = Authory.get_article_links_of_author('ZariaGorvett')
 
     def parse(self, response):
         yield from response.follow_all(

@@ -43,20 +43,31 @@ class Article(WebPages):
 
 class Authory:
     @staticmethod
-    def get_articles_of_author(author: str):
-        response = requests.get(
+    def _request_authory_author(author):
+        response: requests.Response = requests.get(
             f'https://api-production.authory.com/content/{author}?take=300&collection=c5d1d6fb3283d4c4ba80a721ce88bcb26'
         )
 
-        logger.debug(response)
         if response.status_code != 200:
             raise Exception(f'#565 Unable to get articles of {author}')
+        return response
+
+    @staticmethod
+    def get_article_links_of_author(author: str) -> list[str]:
+        response: requests.Response = Authory._request_authory_author(author)
+
+        articles = json.loads(response.content)['articles']
+        return [a['originalUrl'] for a in articles]
+
+    @staticmethod
+    def get_articles_of_author(author: str) -> list[Article]:
+        response: requests.Response = Authory._request_authory_author(author)
 
         articles: list[Article] = Authory.parse_articles(response.content)
         return articles
 
     @staticmethod
-    def parse_articles(response: str):
+    def parse_articles(response: str) -> list[Article]:
         articles: list[Article] = []
         authory_articles = []
         try:

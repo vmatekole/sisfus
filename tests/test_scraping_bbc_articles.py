@@ -2,6 +2,7 @@ from unittest import result
 
 import requests
 
+from base.utils import logger
 from models.web_pages import Article, Authory
 
 from .fixtures import authory_content_response
@@ -9,12 +10,22 @@ from .fixtures import authory_content_response
 
 class TestAuthoryScraping:
     def test_get_authory_article_links_of_author(self):
-        author = 'ZariaGorvett'
+        input = 'ZariaGorvett'
 
-        result: list[Article] = Authory.get_articles_of_author(author)
+        result: list[str] = Authory.get_article_links_of_author(input)
 
-        assert isinstance(result[0], Article)
-        assert result[0].author.name == 'Zaria Gorvett'
+        result = list(
+            filter(
+                lambda l: l
+                == 'https://www.bbc.com/future/article/20150506-the-dark-psychology-of-voting',
+                result,
+            )
+        )
+
+        assert (
+            result[0]
+            == 'https://www.bbc.com/future/article/20150506-the-dark-psychology-of-voting'
+        )
 
     def test_parsing_authory_article_links(self, authory_content_response):
         input = authory_content_response
