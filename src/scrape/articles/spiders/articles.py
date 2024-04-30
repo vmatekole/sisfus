@@ -20,10 +20,10 @@ class BBC(Spider):
         )
 
     def parse_bbc_future_article(self, response):
-        paragraphs = response.css(
+        paragraphs = response.css(  # type: ignore
             '.article__body-content .body-text-card__text p'
         ).getall()
-        paragraphs = self.process_body_text(paragraphs)
+        paragraphs = self.process_body_text(paragraphs)  # type: ignore
 
         yield {
             'title': response.css('.article__body-content .article__intro::text').get(),  # type: ignore
