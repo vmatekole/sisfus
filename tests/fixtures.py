@@ -1,8 +1,34 @@
+import os
+
 import pytest
+import responses
+from scrapy.http import HtmlResponse, Request
 
 
 @pytest.fixture
-def authory_content_response():
+def bbc_future_article_url():
+    return 'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
+
+
+@pytest.fixture
+def bbc_future_article_response_body(bbc_future_article_url) -> HtmlResponse:
+    file_path: str = os.path.join(
+        os.path.dirname(__file__), 'data/html', 'bbc-future-28-05-2024.html'
+    )
+    with open(file_path, 'r', encoding='utf-8') as file:
+        file_content = file.read()
+
+    response = HtmlResponse(
+        url=bbc_future_article_url,
+        request=Request(url=bbc_future_article_url),
+        body=file_content,
+        encoding='utf-8',
+    )
+    return response
+
+
+@pytest.fixture
+def authory_article_list_response():
     return r""" {
   "articles": [
     {
@@ -140,3 +166,9 @@ def authory_content_response():
   "pinned": null,
   "oldestArticleDate": "2015-05-06T00:00:00+00:00"
 }"""
+
+
+@pytest.fixture
+def setup_responses():
+    with responses.RequestsMock() as rsps:
+        yield rsps

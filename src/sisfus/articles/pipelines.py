@@ -8,6 +8,6 @@
 from itemadapter import ItemAdapter
 
 
-class ScrapingPipeline:
+class BigQueryPipeline:
     def process_item(self, item, spider):
         return item

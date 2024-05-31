@@ -10,6 +10,7 @@ dependencies = [
     "scrapy>=2.11.1",
     "dotenv>=0.0.5",
     "pydantic-settings>=2.2.1",
+    "responses>=0.25.0",
 ]
 requires-python = "==3.10.*"
 readme = "README.md"
@@ -20,6 +21,7 @@ license = {text = "MIT"}
 dev = [
     "rich>=13.7.1",
     "pytest>=8.1.1",
+    "validators>=0.28.3",
 ]
 [tool.pdm]
 distribution = false
