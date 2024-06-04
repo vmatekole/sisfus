@@ -4,7 +4,7 @@ from typing import Optional
 
 import requests
 
-from base.utils import logger
+from utils import logger
 
 from .base import WebPages
 
@@ -20,6 +20,7 @@ class Author(WebPages):
 
 class Article(WebPages):
     title: str
-    created_at: Optional[datetime] = None
+    body: str
+    created_at: Optional[datetime]
     modifed_at: Optional[datetime] = None
     tags: Optional[list[str]] = None

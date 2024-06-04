@@ -4,7 +4,7 @@ from logging import Logger
 from dotenv import load_dotenv
 from rich.logging import RichHandler
 
-from base.config import ConfigSettings
+from configs.settings import ConfigSettings
 
 
 def init() -> Logger:

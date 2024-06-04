@@ -3,9 +3,9 @@ from lxml import etree
 from rich import print
 from scrapy.loader import ItemLoader
 
-from base.utils import logger
 from models.web_pages import Article
 from scraper.articles.items import ArticleItem
+from utils import logger
 
 # from models.web_pages import Author
 
@@ -20,17 +20,7 @@ class BBC(scrapy.Spider):
 
     def parse(self, response):
         l = ItemLoader(item=ArticleItem(), response=response)
-        l.add_xpath('title', '//h1[1]/text()')
+        l.add_css('title', 'article h1:first-of-type::text')
+        l.add_css('created_at', 'article time::text')
+        l.add_css('body', 'article')
         yield l.load_item()
-
-    def process_body_text(self, paragraphs):
-        processed_text = []
-
-        for paragraph in paragraphs:
-            paragraph_tree = etree.HTML(paragraph)
-
-            paragraph_text = paragraph_tree.xpath('string()')
-
-            processed_text.append(paragraph_text)
-
-        return processed_text

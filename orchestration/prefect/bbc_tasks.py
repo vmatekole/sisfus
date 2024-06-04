@@ -4,9 +4,9 @@ import sys
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from base.utils import logger
 from models.web_pages import Author
 from sisfus.articles.spiders.bbc import BBC
+from utils import logger
 
 
 def get_source_article_list(response: str) -> list[str]:

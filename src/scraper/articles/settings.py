@@ -7,7 +7,7 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'articles'
+BOT_NAME = 'BBC'
 
 SPIDER_MODULES = ['articles.spiders']
 NEWSPIDER_MODULE = 'articles.spiders'
@@ -62,9 +62,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {
-#    "scraping.pipelines.ScrapingPipeline": 300,
-# }
+ITEM_PIPELINES = {
+    'scraper.articles.pipelines.ArticlePipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
