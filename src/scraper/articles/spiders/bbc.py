@@ -5,7 +5,7 @@ from scrapy.loader import ItemLoader
 
 from base.utils import logger
 from models.web_pages import Article
-from sisfus.articles.items import ArticleItem
+from scraper.articles.items import ArticleItem
 
 # from models.web_pages import Author
 

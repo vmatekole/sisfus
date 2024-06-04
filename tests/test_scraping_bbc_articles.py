@@ -1,21 +1,7 @@
-import os
-from unittest.mock import MagicMock, patch
-
-import pytest
-import requests
-import responses
-import scrapy
 import validators
-from scrapy.crawler import Crawler, CrawlerProcess, CrawlerRunner
-from scrapy.http.response.html import HtmlResponse
-from scrapy.utils.log import configure_logging
-from scrapy.utils.project import get_project_settings
-from twisted.internet import defer
 
-from authory_tasks import get_article_links_of_author
-from base.utils import logger
-from models.web_pages import Article
-from sisfus.articles.spiders.bbc import BBC
+from orchestration.prefect.authory_tasks import get_article_links_of_author
+from scraper.articles.spiders.bbc import BBC
 
 from .fixtures import (
     authory_article_list_response,

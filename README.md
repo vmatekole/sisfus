@@ -1,6 +1,6 @@
-# Web Scraper
+# Sisfus
 
-## Problem statement
+Sisfus is a web scraping and embedding data pipeline for text and images written in Python and implemented with Scrapy and Prefect.
 For web content to be available for NLP applications or for use in training LLMs it must be in a structured form so that it can be easily transformed and accessible for downstream applications.
 
 ## Solution

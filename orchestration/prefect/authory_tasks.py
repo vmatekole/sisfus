@@ -7,7 +7,7 @@ from scrapy.utils.project import get_project_settings
 
 from base.utils import logger
 from models.web_pages import Author
-from sisfus.articles.spiders.bbc import BBC
+from scraper.articles.spiders.bbc import BBC
 
 
 def _request_authory_author(author) -> requests.Response:
