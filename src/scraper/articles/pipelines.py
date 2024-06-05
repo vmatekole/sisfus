@@ -12,9 +12,6 @@ from utils import logger
 
 class ArticlePipeline:
     def process_item(self, item, spider):
-        title = item['title'][0]
-        body = item['body'].replace(title, '')
-        item['body'] = body
         return item
 
     @classmethod
