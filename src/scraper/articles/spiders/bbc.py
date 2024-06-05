@@ -20,6 +20,8 @@ class BBC(scrapy.Spider):
 
     def parse(self, response):
         l = ItemLoader(item=ArticleItem(), response=response)
+        l.add_value('source_url', response.url)
+        l.add_value('source_name', response.url)
         l.add_css('title', 'article h1:first-of-type::text')
         l.add_css('created_at', 'article time::text')
         l.add_css('body', 'article')

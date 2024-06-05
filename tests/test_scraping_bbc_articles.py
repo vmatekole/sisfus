@@ -12,6 +12,8 @@ from utils import logger
 
 from .fixtures import (
     authory_article_list_response,
+    bbc_future_article_body_1,
+    bbc_future_article_body_2,
     bbc_future_article_response_body,
     bbc_future_article_url,
     setup_responses,
@@ -61,7 +63,11 @@ class TestBBCArticleScraping:
 
     @inlineCallbacks
     def test_bbc_future_article_local_scrape(
-        self, setup_responses, bbc_future_article_response_body
+        self,
+        setup_responses,
+        bbc_future_article_response_body,
+        bbc_future_article_body_1,
+        bbc_future_article_body_2,
     ):
         spider = BBC()
         items = list(spider.parse(bbc_future_article_response_body))
@@ -74,6 +80,11 @@ class TestBBCArticleScraping:
         new_item = yield pipe.process_item(items[0], spider)
 
         assert len(items) == 1
+        assert new_item['source_url'] == [
+            'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
+        ]
+        assert new_item['source_name'] == 'BBC'
         assert new_item['title'] == ["The 'dark earth' revealing the Amazon's secrets"]
-        assert new_item['body'] == ["The 'dark earth' revealing the Amazon's secrets"]
         assert new_item['created_at'] == parser.parse('16th January 2024')
+        assert bbc_future_article_body_1 in new_item['body']
+        assert bbc_future_article_body_2 in new_item['body']

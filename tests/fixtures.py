@@ -1,4 +1,5 @@
 import os
+from pickletools import pyset
 
 import pytest
 import responses
@@ -8,6 +9,20 @@ from scrapy.http import HtmlResponse, Request
 @pytest.fixture
 def bbc_future_article_url():
     return 'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
+
+
+@pytest.fixture
+def bbc_future_article_body_1():
+    return 'Amid the discovery of a lost city in the Amazon rainforest, scientists'
+
+
+@pytest.fixture
+def bbc_future_article_body_2():
+    return (
+        'Now businesses are attempting to capitalise on this ancient method, in'
+        ' a quest to help farmers to improve their soil and combat climate'
+        ' change at the same time.'
+    )
 
 
 @pytest.fixture
