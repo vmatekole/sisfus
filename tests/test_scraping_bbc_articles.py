@@ -1,10 +1,9 @@
-from datetime import date
-
 import validators
 from dateutil import parser
 from scrapy.utils.test import get_crawler
 from twisted.internet.defer import inlineCallbacks
 
+from models.web_pages import Article
 from orchestration.prefect.authory_tasks import get_article_links_of_author
 from scraper.articles import pipelines
 from scraper.articles.spiders.bbc import BBC
@@ -14,6 +13,7 @@ from .fixtures import (
     authory_article_list_response,
     bbc_future_article_body_1,
     bbc_future_article_body_2,
+    bbc_future_article_dict,
     bbc_future_article_response_body,
     bbc_future_article_url,
     setup_responses,
@@ -47,46 +47,44 @@ class TestAuthoryScraping:
 
 
 class TestBBCArticleScraping:
+    spider = BBC()
+
     def test_bbc_future_article_scrape(self):
         pass
 
-    # def test_bbc_future_article_local_scrape(
-    #     self, setup_responses, bbc_future_article_response_body
-    # ):
-    #     spider = BBC()
-    #     items = list(spider.parse(bbc_future_article_response_body))
-
-    #     assert len(items) == 1
-    #     assert items[0]['title'] == ["The 'dark earth' revealing the Amazon's secrets"]
-    #     assert items[0]['body'] == ["The 'dark earth' revealing the Amazon's secrets"]
-    #     assert items[0]['created_at'] == parser.parse('16th January 2024')
-
     @inlineCallbacks
     def test_bbc_future_article_local_scrape(
-        self,
         setup_responses,
         bbc_future_article_response_body,
         bbc_future_article_body_1,
         bbc_future_article_body_2,
     ):
-        spider = BBC()
+        spider = TestBBCArticleScraping.spider
+        pipeline_class = pipelines.ArticleValidationPipeline
+        pipe = pipeline_class.from_crawler(get_crawler(BBC))
+
         items = list(spider.parse(bbc_future_article_response_body))
 
-        pipeline_class = pipelines.ArticlePipeline
-
-        crawler = get_crawler(BBC)
-        pipe = pipeline_class.from_crawler(crawler)
-
-        new_item = yield pipe.process_item(items[0], spider)
-        body = new_item['body']
+        article: Article = yield pipe.process_item(items[0], spider)
+        body = article.body
 
         assert len(items) == 1
         assert (
-            new_item['source_url']
+            article.source_url
             == 'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
         )
-        assert new_item['source_name'] == 'BBC'
-        assert new_item['title'] == "The 'dark earth' revealing the Amazon's secrets"
-        assert new_item['created_at'] == parser.parse('16th January 2024')
+        assert article.source_name == 'BBC'
+        assert article.title == "The 'dark earth' revealing the Amazon's secrets"
+        assert article.published_at == parser.parse('16th January 2024')
         assert bbc_future_article_body_1 in body
         assert bbc_future_article_body_2 in body
+
+    @inlineCallbacks
+    def test_bbc_future_article_bq_pipeline(setup_responses, bbc_future_article_dict):
+        pipeline_class = pipelines.BigQueryArticlePipeline
+        pipe = pipeline_class.from_crawler(get_crawler(BBC))
+        spider = TestBBCArticleScraping.spider
+
+        items = [Article(**bbc_future_article_dict)]
+
+        new_item = yield pipe.process_item(items[0], spider)

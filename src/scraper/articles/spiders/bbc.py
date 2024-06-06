@@ -19,6 +19,6 @@ class BBC(scrapy.Spider):
         l.add_value('source_url', response.url)
         l.add_value('source_name', source_name(response.url))
         l.add_css('title', 'article h1:first-of-type::text')
-        l.add_css('created_at', 'article time::text')
+        l.add_css('published_at', 'article time::text')
         l.add_css('body', 'article')
         yield l.load_item()

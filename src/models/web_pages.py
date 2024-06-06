@@ -1,10 +1,7 @@
-import json
 from datetime import datetime
 from typing import Optional
 
-import requests
-
-from utils import logger
+from pydantic import field_serializer, model_serializer
 
 from .base import WebPages
 
@@ -23,6 +20,10 @@ class Article(WebPages):
     source_url: str
     source_name: str
     body: str
-    created_at: Optional[datetime]
-    modifed_at: Optional[datetime] = None
+    published_at: datetime
+    updated_at: Optional[datetime] = None
     tags: Optional[list[str]] = None
+
+    @field_serializer('published_at')
+    def isodate(published_at):
+        return published_at.isoformat()

@@ -14,6 +14,6 @@ class ArticleItem(scrapy.Item):
     body = scrapy.Field(
         input_processor=MapCompose(article_body), output_processor=TakeFirst()
     )
-    created_at = scrapy.Field(
+    published_at = scrapy.Field(
         input_processor=MapCompose(parser.parse), output_processor=TakeFirst()
     )

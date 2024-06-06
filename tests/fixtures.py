@@ -1,8 +1,8 @@
 import os
-from pickletools import pyset
 
 import pytest
 import responses
+from dateutil import parser
 from scrapy.http import HtmlResponse, Request
 
 
@@ -23,6 +23,18 @@ def bbc_future_article_body_2():
         ' a quest to help farmers to improve their soil and combat climate'
         ' change at the same time.'
     )
+
+
+@pytest.fixture
+def bbc_future_article_dict():
+    return {
+        'body': 'Article body',
+        'title': 'Title',
+        'source_url': 'http://not.real',
+        'source_name': 'Source name',
+        'body': 'Body',
+        'published_at': parser.parse('22nd May 1980'),
+    }
 
 
 @pytest.fixture
