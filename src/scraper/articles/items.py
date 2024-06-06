@@ -6,8 +6,8 @@ from scraper.articles.processors import article_body, source_name
 
 
 class ArticleItem(scrapy.Item):
-    title = scrapy.Field()
-    source_url = scrapy.Field()
+    title = scrapy.Field(output_processor=TakeFirst())
+    source_url = scrapy.Field(output_processor=TakeFirst())
     source_name = scrapy.Field(
         input_processor=MapCompose(source_name), output_processor=TakeFirst()
     )

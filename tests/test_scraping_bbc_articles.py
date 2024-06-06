@@ -78,13 +78,15 @@ class TestBBCArticleScraping:
         pipe = pipeline_class.from_crawler(crawler)
 
         new_item = yield pipe.process_item(items[0], spider)
+        body = new_item['body']
 
         assert len(items) == 1
-        assert new_item['source_url'] == [
-            'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
-        ]
+        assert (
+            new_item['source_url']
+            == 'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
+        )
         assert new_item['source_name'] == 'BBC'
-        assert new_item['title'] == ["The 'dark earth' revealing the Amazon's secrets"]
+        assert new_item['title'] == "The 'dark earth' revealing the Amazon's secrets"
         assert new_item['created_at'] == parser.parse('16th January 2024')
-        assert bbc_future_article_body_1 in new_item['body']
-        assert bbc_future_article_body_2 in new_item['body']
+        assert bbc_future_article_body_1 in body
+        assert bbc_future_article_body_2 in body

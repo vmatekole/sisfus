@@ -20,6 +20,8 @@ class Author(WebPages):
 
 class Article(WebPages):
     title: str
+    source_url: str
+    source_name: str
     body: str
     created_at: Optional[datetime]
     modifed_at: Optional[datetime] = None

@@ -1,18 +1,21 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from pydantic import ValidationError
+from scrapy.exceptions import DropItem
 
+from models.web_pages import Article
 from utils import logger
 
 
 class ArticlePipeline:
     def process_item(self, item, spider):
-        return item
+        # Validate item
+        # Persist to bigquery
+        try:
+            valid_article = Article(**item)
+            return valid_article.model_dump()
+        except ValidationError as e:
+            spider.logger.error(f'Invalid item {e}')
+            raise DropItem(f'Item validation failed: {e}')
 
     @classmethod
     def from_crawler(cls, crawler):

@@ -1,13 +1,9 @@
 import scrapy
-from lxml import etree
-from rich import print
 from scrapy.loader import ItemLoader
 
-from models.web_pages import Article
 from scraper.articles.items import ArticleItem
-from utils import logger
 
-# from models.web_pages import Author
+from ..processors import source_name
 
 
 class BBC(scrapy.Spider):
@@ -21,7 +17,7 @@ class BBC(scrapy.Spider):
     def parse(self, response):
         l = ItemLoader(item=ArticleItem(), response=response)
         l.add_value('source_url', response.url)
-        l.add_value('source_name', response.url)
+        l.add_value('source_name', source_name(response.url))
         l.add_css('title', 'article h1:first-of-type::text')
         l.add_css('created_at', 'article time::text')
         l.add_css('body', 'article')
