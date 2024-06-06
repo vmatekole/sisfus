@@ -1,14 +1,13 @@
 # Sisfus
+(Under Development)
 
-Sisfus is a web scraping and embedding data pipeline for text and images written in Python and implemented with Scrapy and Prefect.
-For web content to be available for NLP applications or for use in training LLMs it must be in a structured form so that it can be easily transformed and accessible for downstream applications.
+Sisfus is a command-line tool for web scraping and embedding generation, designed to make web content available for NLP and LLM applications.
 
-## Solution
 A suite of Python classes leveraging (scrapy)[https://scrapy.org/] to scrape content from the following sources:
 - bbc.co.uk
 
+Embedding models supported:
+- text-embedding-3-small (OpenAI)
+- text-embedding-3-large (OpenAI)
+
 Content is parsed and validated into a set of Pydantic models and then persisted to Bigquery.
-
-All ETL tasks are orchestrated using Prefect.
-
-Show example schema
