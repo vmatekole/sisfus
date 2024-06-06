@@ -1,4 +1,4 @@
-# Sisfus
+# "Sisfus" (Code name)
 (Under Development)
 
 Sisfus is a command-line tool for web scraping and embedding generation, designed to make web content available for NLP and LLM applications.
