@@ -4,7 +4,10 @@ from google.api_core.exceptions import ClientError
 from google.cloud import bigquery
 from google.cloud.bigquery.table import RowIterator, _EmptyRowIterator
 
+from configs.settings import ConfigSettings
 from utils import logger
+
+config = ConfigSettings
 
 
 class Bq:
@@ -12,7 +15,11 @@ class Bq:
         self._client = client
 
     def insert_to_bigquery(
-        self, objs: list[any], project_id: str, dataset_id: str, table_id: str
+        self,
+        objs: list[any],
+        table_id: str,
+        project_id: str = config.gcp_project_id,
+        dataset_id: str = config.bq_dataset_id,
     ):
         client = self._client
 

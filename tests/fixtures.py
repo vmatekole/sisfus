@@ -28,12 +28,22 @@ def bbc_future_article_body_2():
 @pytest.fixture
 def bbc_future_article_dict():
     return {
-        'body': 'Article body',
         'title': 'Title',
         'source_url': 'http://not.real',
         'source_name': 'Source name',
-        'body': 'Body',
+        'body': 'Body text',
         'published_at': parser.parse('22nd May 1980'),
+    }
+
+
+@pytest.fixture
+def bbc_future_article_dict_1():
+    return {
+        'title': 'Title',
+        'source_url': 'http://not.real2',
+        'source_name': 'Source name 2',
+        'body': 'Lorem ipsum',
+        'published_at': parser.parse('11th Oct 2015'),
     }
 
 

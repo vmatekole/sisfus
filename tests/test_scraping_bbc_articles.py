@@ -1,10 +1,10 @@
 import validators
 from dateutil import parser
+from orchestration.prefect.authory_tasks import get_article_links_of_author
 from scrapy.utils.test import get_crawler
 from twisted.internet.defer import inlineCallbacks
 
 from models.web_pages import Article
-from orchestration.prefect.authory_tasks import get_article_links_of_author
 from scraper.articles import pipelines
 from scraper.articles.spiders.bbc import BBC
 from utils import logger

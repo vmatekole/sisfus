@@ -2,6 +2,8 @@ from client.bq import Bq
 from configs.settings import ConfigSettings, Settings
 from utils import logger
 
+config: Settings = ConfigSettings
+
 
 class BqService:
     def __init__(self, client) -> None:
@@ -15,10 +17,14 @@ class ArticleService(BqService):
 
     def save_articles(self, articles):
 
-        config: Settings = ConfigSettings
         return self._bq.insert_to_bigquery(
             articles,
-            config.gcp_project_id,
-            config.bq_dataset_id,
-            config.bq_articles_table_id,
+            'article',
+        )
+
+    def save_text_embeddings(self, embeddings):
+
+        return self._bq.insert_to_bigquery(
+            embeddings,
+            'text_embeddings',
         )

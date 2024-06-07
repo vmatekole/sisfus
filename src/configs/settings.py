@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     bq_dataset_id: str
     gcp_project_id: str
     bq_dataset_id: str
-    bq_articles_table_id: str
     bq_cache_limit: int
+    openai_key: str
 
 
 ConfigSettings = Settings(_env_file=os.environ['SETTINGS_ENV_FILE'])

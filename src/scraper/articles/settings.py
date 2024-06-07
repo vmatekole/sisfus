@@ -64,7 +64,8 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     'scraper.articles.pipelines.ArticleValidationPipeline': 300,
-    'scraper.articles.pipelines.BigQueryPipeline': 300,
+    'scraper.articles.pipelines.BigQueryPipeline': 400,
+    'scraper.articles.pipelines.EmbeddingArticlePipeline': 500,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

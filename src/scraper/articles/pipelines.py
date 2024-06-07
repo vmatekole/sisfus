@@ -63,3 +63,12 @@ class BigQueryArticlePipeline(BasePipeline):
         c = self._item_cache[ConfigSettings.bq_articles_table_id]
         self._bq_service.save_articles(c)
         c = []
+
+
+class EmbeddingArticlePipeline(BasePipeline):
+    def __init__(self):
+        self._bq_service: ArticleService = bq.ArticleService(bigquery.Client())
+        self._item_cache = {}
+
+    def process_item(self, item, spider: scrapy.Spider):
+        return item

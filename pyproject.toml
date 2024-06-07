@@ -24,6 +24,7 @@ dev = [
     "pytest>=8.1.1",
     "validators>=0.28.3",
     "pytest-twisted>=1.14.1",
+    "pytest-asyncio>=0.23.7",
 ]
 [tool.pdm]
 distribution = false
