@@ -1,7 +1,6 @@
 import pytest
 
 from tasks.embedding_tasks import create_embeddings
-from utils import logger
 
 from .fixtures import bbc_future_article_dict, bbc_future_article_dict_1
 

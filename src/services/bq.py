@@ -1,18 +1,19 @@
+from google.cloud import bigquery
+
 from client.bq import Bq
 from configs.settings import ConfigSettings, Settings
-from utils import logger
 
 config: Settings = ConfigSettings
 
 
 class BqService:
-    def __init__(self, client) -> None:
+    def __init__(self, client=bigquery.Client()) -> None:
         self._client = client
         self._bq = Bq(client)
 
 
 class ArticleService(BqService):
-    def __init__(self, client) -> None:
+    def __init__(self, client=bigquery.Client()) -> None:
         super().__init__(client)
 
     def save_articles(self, articles):
