@@ -27,5 +27,5 @@ class ArticleService(BqService):
 
         return self._bq.insert_to_bigquery(
             embeddings,
-            'text_embeddings',
+            'article_embeddings',
         )

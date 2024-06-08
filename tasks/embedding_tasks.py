@@ -5,6 +5,7 @@ import httpx
 from rich import print_json
 
 from configs.settings import ConfigSettings
+from models.web_pages import ArticleEmbedding
 from utils import logger
 
 MODEL_NAMES = [
@@ -35,8 +36,11 @@ async def get_openai_embeddings(model_name, texts):
             r = []
             if len(texts) == len(embeddings['data']):
                 for i, a in enumerate(texts):
-                    r.append(texts[i])
-                    r[i]['embedding'] = embeddings['data'][i]['embedding']
+                    a = ArticleEmbedding(
+                        source_url=texts[i]['source_url'],
+                        embedding=embeddings['data'][i]['embedding'],
+                    )
+                    r.append(a)
                 return r
             else:
                 logger.error('Texts and embeddings not equal')
@@ -44,7 +48,7 @@ async def get_openai_embeddings(model_name, texts):
             print(f"Error: {response.status_code}, {response.text}")
 
 
-async def create_embeddings(model_name, texts):
+async def create_article_embeddings(model_name, texts):
     article_embeddings = []
     for i in range(0, len(texts), 100):
         c = texts[i : i + 100]
