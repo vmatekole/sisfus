@@ -44,14 +44,14 @@ class ArticleValidationPipeline(BasePipeline):
 
 class BigQueryArticlePipeline(BasePipeline):
     def __init__(self):
-        self._bq_service: ArticleService = bq.ArticleService(bigquery.Client())
+        self._bq_service: ArticleService = bq.ArticleService()
         self._item_cache = {}
 
     def process_item(self, item, spider: scrapy.Spider):
         c = None
-        if ConfigSettings.bq_articles_table_id not in self._item_cache:
-            self._item_cache[ConfigSettings.bq_articles_table_id] = []
-            c = self._item_cache[ConfigSettings.bq_articles_table_id]
+        if 'article' not in self._item_cache:
+            self._item_cache['article'] = []
+            c = self._item_cache['article']
 
         c.append(item)
 
@@ -60,14 +60,14 @@ class BigQueryArticlePipeline(BasePipeline):
         return item
 
     def flush_items(self):
-        c = self._item_cache[ConfigSettings.bq_articles_table_id]
+        c = self._item_cache['article']
         self._bq_service.save_articles(c)
         c = []
 
 
 class EmbeddingArticlePipeline(BasePipeline):
     def __init__(self):
-        self._bq_service: ArticleService = bq.ArticleService(bigquery.Client())
+        self._bq_service: ArticleService = bq.ArticleService()
         self._item_cache = {}
 
     def process_item(self, item, spider: scrapy.Spider):
