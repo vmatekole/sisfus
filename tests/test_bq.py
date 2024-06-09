@@ -18,6 +18,9 @@ class TestBQService:
             [bbc_future_article_dict, bbc_future_article_dict_1],
         )
 
-        bq = ArticleService()
-
-        bq.save_text_embeddings(embeddings)
+        with patch.object(
+            ArticleService, 'insert_to_bigquery', return_value=None
+        ) as mock_insert:
+            bq = ArticleService()
+            bq.save_text_embeddings(embeddings)
+            mock_insert.assert_called_once_with(embeddings, 'article_embeddings')
