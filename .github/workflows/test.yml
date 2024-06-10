@@ -14,11 +14,13 @@ jobs:
           python-version: 3.12
           cache: true
       - name: Install dependencies
-        run: pdm install
+        run: |
+            pdm install
+            pdm install -G dev
       - name: Run tests
         run: |
             if [ -d tests/ ]; then
-            pytest
+                pytest
             else
-            echo "No tests/ directory found, skipping"
+                echo "No tests/ directory found, skipping"
             fi
