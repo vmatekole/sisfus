@@ -1,12 +1,10 @@
 import json
-import sys
 
 import requests
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 from models.web_pages import Author
-from scraper.articles.spiders.bbc import BBC
 from utils import logger
 
 

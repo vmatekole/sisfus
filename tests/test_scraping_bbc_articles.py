@@ -7,6 +7,7 @@ from models.web_pages import Article
 from scraper.articles import pipelines
 from scraper.articles.spiders.bbc import BBC
 from tasks.authory_tasks import get_article_links_of_author
+from utils import logger
 
 from .fixtures import (
     authory_article_list_response,
@@ -28,14 +29,14 @@ class TestAuthoryScraping:
         result = list(
             filter(
                 lambda l: l
-                == 'https://www.bbc.com/future/article/20150506-the-dark-psychology-of-voting',
+                == 'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets',
                 result,
             )
         )
 
         assert (
             result[0]
-            == 'https://www.bbc.com/future/article/20150506-the-dark-psychology-of-voting'
+            == 'https://www.bbc.com/future/article/20240116-the-dark-earth-revealing-the-amazons-secrets'
         )
 
     def test_parsing_authory_article_links(authory_article_list_response):

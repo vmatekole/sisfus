@@ -1,8 +1,4 @@
-from cgitb import text
-from io import text_encoding
-
 import httpx
-from rich import print_json
 
 from configs.settings import ConfigSettings
 from models.web_pages import ArticleEmbedding

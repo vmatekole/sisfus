@@ -17,7 +17,6 @@ class ArticleService(BqService):
         super().__init__(client)
 
     def save_articles(self, articles):
-
         return self._bq.insert_to_bigquery(
             articles,
             'article',
