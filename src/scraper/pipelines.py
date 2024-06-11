@@ -15,15 +15,15 @@ from utils import logger
 
 
 class BasePipeline(ABC):
-    @classmethod
-    def from_crawler(cls, crawler):
-        try:
-            pipe = cls.from_settings(crawler.settings)  # type: ignore[attr-defined]
-        except AttributeError:
-            pipe = cls()
-            pipe.crawler = crawler
-            pipe._fingerprinter = crawler.request_fingerprinter
-        return pipe
+    # @classmethod
+    # def from_crawler(cls, crawler):
+    #     try:
+    #         pipe = cls.from_settings(crawler.settings)  # type: ignore[attr-defined]
+    #     except AttributeError:
+    #         pipe = cls()
+    #         pipe.crawler = crawler
+    #         pipe._fingerprinter = crawler.request_fingerprinter
+    #     return pipe
 
     def flush_items(self):
         pass
@@ -47,15 +47,16 @@ class BigQueryArticlePipeline(BasePipeline):
         self._bq_service: ArticleService = bq.ArticleService()
         self._item_cache = {}
 
+    def close_spider(self, spider: scrapy.Spider):
+        self.flush_items()
+        super().close_spider(spider)
+
     def process_item(self, item, spider: scrapy.Spider):
-        c = None
         if 'article' not in self._item_cache:
-            self._item_cache['article'] = []
-            c = self._item_cache['article']
+            self._item_cache = {'article': []}
+        self._item_cache['article'].append(item)
 
-        c.append(item)
-
-        if len(c) >= ConfigSettings.bq_cache_limit:
+        if len(self._item_cache) >= ConfigSettings.bq_cache_limit:
             self.flush_items()
         return item
 

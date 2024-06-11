@@ -2,7 +2,7 @@ import scrapy
 from dateutil import parser
 from itemloaders.processors import MapCompose, TakeFirst
 
-from scraper.articles.processors import article_body, source_name
+from scraper.processors import article_body, source_name
 
 
 class ArticleItem(scrapy.Item):

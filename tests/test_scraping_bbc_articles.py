@@ -4,8 +4,8 @@ from scrapy.utils.test import get_crawler
 from twisted.internet.defer import inlineCallbacks
 
 from models.web_pages import Article
-from scraper.articles import pipelines
-from scraper.articles.spiders.bbc import BBC
+from scraper import pipelines
+from scraper.spiders.articles import BBC
 from tasks.authory_tasks import get_article_links_of_author
 from utils import logger
 
@@ -61,7 +61,7 @@ class TestBBCArticleScraping:
     ):
         spider = TestBBCArticleScraping.spider
         pipeline_class = pipelines.ArticleValidationPipeline
-        pipe = pipeline_class.from_crawler(get_crawler(BBC))
+        pipe = pipeline_class.from_crawler(get_crawler(BBCSpider))
 
         items = list(spider.parse(bbc_future_article_response_body))
 
@@ -82,7 +82,7 @@ class TestBBCArticleScraping:
     @inlineCallbacks
     def test_bbc_future_article_bq_pipeline(setup_responses, bbc_future_article_dict):
         pipeline_class = pipelines.BigQueryArticlePipeline
-        pipe = pipeline_class.from_crawler(get_crawler(BBC))
+        pipe = pipeline_class.from_crawler(get_crawler(BBCSpider))
         spider = TestBBCArticleScraping.spider
 
         items = [Article(**bbc_future_article_dict)]
