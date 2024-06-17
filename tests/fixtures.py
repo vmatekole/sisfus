@@ -28,7 +28,7 @@ def bbc_future_article_body_2():
 @pytest.fixture
 def bbc_future_article_dict():
     return {
-        'title': 'Title',
+        'title': 'Satoshi Nakamoto is alive',
         'source_url': 'http://not.real',
         'source_name': 'Source name',
         'body': 'Body text',

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Self
 from unittest.mock import Base
 
 import scrapy
@@ -15,15 +16,15 @@ from utils import logger
 
 
 class BasePipeline(ABC):
-    # @classmethod
-    # def from_crawler(cls, crawler):
-    #     try:
-    #         pipe = cls.from_settings(crawler.settings)  # type: ignore[attr-defined]
-    #     except AttributeError:
-    #         pipe = cls()
-    #         pipe.crawler = crawler
-    #         pipe._fingerprinter = crawler.request_fingerprinter
-    #     return pipe
+    @classmethod
+    def from_crawler(cls, crawler):
+        try:
+            pipe = cls.from_settings(crawler.settings)  # type: ignore[attr-defined]
+        except AttributeError:
+            pipe = cls()
+            pipe.crawler = crawler
+            pipe._fingerprinter = crawler.request_fingerprinter
+        return pipe
 
     def flush_items(self):
         pass
@@ -61,9 +62,13 @@ class BigQueryArticlePipeline(BasePipeline):
         return item
 
     def flush_items(self):
-        c = self._item_cache['article']
-        self._bq_service.save_articles(c)
-        c = []
+        if self.cache_size > 0:
+            self._bq_service.save_articles(self._item_cache['article'])
+            self._item_cache['article'] = []
+
+    @property
+    def cache_size(self):
+        return len(self._item_cache['article'])
 
 
 class EmbeddingArticlePipeline(BasePipeline):

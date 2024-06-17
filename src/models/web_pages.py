@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import field_serializer, model_serializer
+from pydantic import field_serializer
 
 from .base import WebPages
 

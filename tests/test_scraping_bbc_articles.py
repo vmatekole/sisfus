@@ -61,7 +61,7 @@ class TestBBCArticleScraping:
     ):
         spider = TestBBCArticleScraping.spider
         pipeline_class = pipelines.ArticleValidationPipeline
-        pipe = pipeline_class.from_crawler(get_crawler(BBCSpider))
+        pipe = pipeline_class.from_crawler(get_crawler(BBC))
 
         items = list(spider.parse(bbc_future_article_response_body))
 
@@ -82,9 +82,14 @@ class TestBBCArticleScraping:
     @inlineCallbacks
     def test_bbc_future_article_bq_pipeline(setup_responses, bbc_future_article_dict):
         pipeline_class = pipelines.BigQueryArticlePipeline
-        pipe = pipeline_class.from_crawler(get_crawler(BBCSpider))
+        pipe = pipeline_class.from_crawler(get_crawler(BBC))
         spider = TestBBCArticleScraping.spider
 
         items = [Article(**bbc_future_article_dict)]
 
         new_item = yield pipe.process_item(items[0], spider)
+
+        pipe.close_spider(spider)
+
+        assert new_item.title == 'Satoshi Nakamoto is alive'
+        assert pipe.cache_size == 0
