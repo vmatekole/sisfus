@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     bq_dataset_id: str
     bq_cache_limit: int
     openai_key: str
+    test_without_bigquery: bool
 
 
 ConfigSettings = Settings(_env_file=os.environ['SETTINGS_ENV_FILE'])

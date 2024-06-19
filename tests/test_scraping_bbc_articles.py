@@ -1,13 +1,14 @@
+import pytest
 import validators
 from dateutil import parser
 from scrapy.utils.test import get_crawler
 from twisted.internet.defer import inlineCallbacks
 
+from configs.settings import ConfigSettings
 from models.web_pages import Article
 from scraper import pipelines
 from scraper.spiders.articles import BBC
 from tasks.authory_tasks import get_article_links_of_author
-from utils import logger
 
 from .fixtures import (
     authory_article_list_response,
@@ -79,6 +80,10 @@ class TestBBCArticleScraping:
         assert bbc_future_article_body_1 in body
         assert bbc_future_article_body_2 in body
 
+    @pytest.mark.skipif(
+        ConfigSettings.test_without_bigquery,
+        reason='No Bigquery available',
+    )
     @inlineCallbacks
     def test_bbc_future_article_bq_pipeline(setup_responses, bbc_future_article_dict):
         pipeline_class = pipelines.BigQueryArticlePipeline

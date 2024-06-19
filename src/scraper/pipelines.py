@@ -64,7 +64,7 @@ class BigQueryArticlePipeline(BasePipeline):
     def flush_items(self):
         if self.cache_size > 0:
             self._bq_service.save_articles(self._item_cache['article'])
-            self._item_cache['article'] = []
+            self._item_cache['article'].clear()
 
     @property
     def cache_size(self):
