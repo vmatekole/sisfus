@@ -49,8 +49,8 @@ class BigQueryArticlePipeline(BasePipeline):
         self._item_cache = {}
 
     def close_spider(self, spider: scrapy.Spider):
-        self.flush_items()
         super().close_spider(spider)
+        self.flush_items()
 
     def process_item(self, item, spider: scrapy.Spider):
         if 'article' not in self._item_cache:
@@ -63,7 +63,7 @@ class BigQueryArticlePipeline(BasePipeline):
 
     def flush_items(self):
         if self.cache_size > 0:
-            self._bq_service.save_articles(self._item_cache['article'])
+            self._bq_service.save_articles(self._item_cache['article'].copy())
             self._item_cache['article'].clear()
 
     @property

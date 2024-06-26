@@ -1,8 +1,10 @@
+import datetime
+from unittest import mock
+
 import pytest
 import validators
 from dateutil import parser
 from scrapy.utils.test import get_crawler
-from twisted.internet.defer import inlineCallbacks
 
 from configs.settings import ConfigSettings
 from models.web_pages import Article
@@ -17,7 +19,6 @@ from .fixtures import (
     bbc_future_article_dict,
     bbc_future_article_response_body,
     bbc_future_article_url,
-    setup_responses,
 )
 
 
@@ -53,9 +54,8 @@ class TestBBCArticleScraping:
     def test_bbc_future_article_scrape(self):
         pass
 
-    @inlineCallbacks
     def test_bbc_future_article_local_scrape(
-        setup_responses,
+        self,
         bbc_future_article_response_body,
         bbc_future_article_body_1,
         bbc_future_article_body_2,
@@ -65,8 +65,7 @@ class TestBBCArticleScraping:
         pipe = pipeline_class.from_crawler(get_crawler(BBC))
 
         items = list(spider.parse(bbc_future_article_response_body))
-
-        article: Article = yield pipe.process_item(items[0], spider)
+        article: Article = pipe.process_item(items[0], spider)
         body = article.body
 
         assert len(items) == 1
@@ -84,17 +83,39 @@ class TestBBCArticleScraping:
         ConfigSettings.test_without_bigquery,
         reason='No Bigquery available',
     )
-    @inlineCallbacks
-    def test_bbc_future_article_bq_pipeline(setup_responses, bbc_future_article_dict):
+    def test_bbc_future_article_bq_pipeline(self, bbc_future_article_dict):
         pipeline_class = pipelines.BigQueryArticlePipeline
         pipe = pipeline_class.from_crawler(get_crawler(BBC))
         spider = TestBBCArticleScraping.spider
 
         items = [Article(**bbc_future_article_dict)]
-
         new_item = yield pipe.process_item(items[0], spider)
-
         pipe.close_spider(spider)
 
         assert new_item.title == 'Satoshi Nakamoto is alive'
         assert pipe.cache_size == 0
+
+    def test_bbc_future_article_mocked_bq_pipeline(
+        self, mocker, bbc_future_article_dict
+    ):
+
+        pipeline_class = pipelines.BigQueryArticlePipeline
+        pipe = pipeline_class.from_crawler(get_crawler(BBC))
+        spider = TestBBCArticleScraping.spider
+
+        expected_article = Article(
+            title='Satoshi Nakamoto is alive',
+            source_url='http://not.real',
+            source_name='Source name',
+            body='Body text',
+            published_at=datetime.datetime(1980, 5, 22, 0, 0),
+            updated_at=None,
+            tags=None,
+        )
+        m = mock.Mock()
+        pipe._bq_service.save_articles = m
+        items = [Article(**bbc_future_article_dict)]
+        new_item = pipe.process_item(items[0], spider)
+        pipe.close_spider(spider)
+
+        m.assert_called_once_with([expected_article])
