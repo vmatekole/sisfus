@@ -1,6 +1,6 @@
 import pytest
 
-from tasks.embedding_tasks import create_article_embeddings
+from tasks.embedding_tasks import embed_batch
 
 from .fixtures import bbc_future_article_dict, bbc_future_article_dict_1
 
@@ -10,7 +10,7 @@ class TestEmbeddingTasks:
     async def test_open_ai_embedding(
         self, bbc_future_article_dict, bbc_future_article_dict_1
     ):
-        text_embeddings = await create_article_embeddings(
+        text_embeddings = await embed_batch(
             'text-embedding-3-small',
             [bbc_future_article_dict, bbc_future_article_dict_1],
         )
@@ -33,8 +33,10 @@ class TestEmbeddingTasks:
         ]
 
         assert (
-            expected_slice_1 == text_embeddings[0].embedding[0 : len(expected_slice_1)]
+            expected_slice_1
+            == text_embeddings[0]['embedding'][0 : len(expected_slice_1)]
         )
         assert (
-            expected_slice_2 == text_embeddings[1].embedding[0 : len(expected_slice_2)]
+            expected_slice_2
+            == text_embeddings[1]['embedding'][0 : len(expected_slice_2)]
         )

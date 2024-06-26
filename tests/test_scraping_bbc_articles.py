@@ -119,3 +119,5 @@ class TestBBCArticleScraping:
         pipe.close_spider(spider)
 
         m.assert_called_once_with([expected_article])
+
+        assert pipe.cache_size == 0

@@ -1,7 +1,8 @@
 import httpx
 
 from configs.settings import ConfigSettings
-from models.web_pages import ArticleEmbedding
+from models.base import Embedding
+from models.web_pages import Embedding
 from utils import logger
 
 MODEL_NAMES = [
@@ -29,25 +30,20 @@ async def get_openai_embeddings(model_name, texts):
 
         if response.status_code == 200:
             embeddings = response.json()
-            r = []
             if len(texts) == len(embeddings['data']):
-                for i, a in enumerate(texts):
-                    a = ArticleEmbedding(
-                        source_url=texts[i]['source_url'],
-                        embedding=embeddings['data'][i]['embedding'],
-                    )
-                    r.append(a)
-                return r
+                return embeddings
             else:
                 logger.error('Texts and embeddings not equal')
         else:
             print(f"Error: {response.status_code}, {response.text}")
 
 
-async def create_article_embeddings(model_name, texts):
+async def embed_batch(
+    model_name: str, texts: list[str], batch_size: int = ConfigSettings.item_cache_limit
+):
     article_embeddings = []
-    for i in range(0, len(texts), 100):
-        c = texts[i : i + 100]
-        article_embeddings.extend(await get_openai_embeddings(model_name, c))
-
+    for i in range(0, len(texts), batch_size):
+        t = texts[i : i + batch_size]
+        e = await get_openai_embeddings(model_name, t)
+        article_embeddings.extend(e['data'])
     return article_embeddings

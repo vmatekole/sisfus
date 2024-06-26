@@ -12,10 +12,15 @@ from configs.settings import ConfigSettings
 from models.web_pages import Article
 from services import bq
 from services.bq import ArticleService, BqService
+from tasks.embedding_tasks import embed_batch
 from utils import logger
 
 
 class BasePipeline(ABC):
+    def __init__(self) -> None:
+        super().__init__()
+        self._item_cache = {}
+
     @classmethod
     def from_crawler(cls, crawler):
         try:
@@ -26,14 +31,21 @@ class BasePipeline(ABC):
             pipe._fingerprinter = crawler.request_fingerprinter
         return pipe
 
-    def flush_items(self):
+    def process_item(self, item, spider):
         pass
 
     def close_spider(self, spider: scrapy.Spider):
         self.flush_items()
 
+    @property
+    def cache_size(self):
+        return 0
+
 
 class ArticleValidationPipeline(BasePipeline):
+    def __init__(self):
+        super().__init__()
+
     def process_item(self, item, spider):
         try:
             valid_article = Article(**item)
@@ -45,36 +57,58 @@ class ArticleValidationPipeline(BasePipeline):
 
 class BigQueryArticlePipeline(BasePipeline):
     def __init__(self):
+        super().__init__()
         self._bq_service: ArticleService = bq.ArticleService()
-        self._item_cache = {}
 
     def close_spider(self, spider: scrapy.Spider):
         super().close_spider(spider)
         self.flush_items()
 
-    def process_item(self, item, spider: scrapy.Spider):
+    @property
+    def cache_size(self):
+        return len(self._item_cache['article']) if 'article' in self._item_cache else 0
+
+    def process_item(self, a: Article, spider):
         if 'article' not in self._item_cache:
             self._item_cache = {'article': []}
-        self._item_cache['article'].append(item)
+        self._item_cache['article'].append(a)
 
-        if len(self._item_cache) >= ConfigSettings.bq_cache_limit:
+        if self.cache_size >= ConfigSettings.item_cache_limit:
             self.flush_items()
-        return item
+        return a
 
     def flush_items(self):
         if self.cache_size > 0:
             self._bq_service.save_articles(self._item_cache['article'].copy())
             self._item_cache['article'].clear()
 
-    @property
-    def cache_size(self):
-        return len(self._item_cache['article'])
-
 
 class EmbeddingArticlePipeline(BasePipeline):
     def __init__(self):
         self._bq_service: ArticleService = bq.ArticleService()
-        self._item_cache = {}
+        self.model_name = ConfigSettings.article_embed_model
 
-    def process_item(self, item, spider: scrapy.Spider):
-        return item
+    @property
+    def cache_size(self):
+        return len(self._item_cache['article']) if 'article' in self._item_cache else 0
+
+    async def process_item(self, a: Article, spider):
+        if 'article' not in self._item_cache:
+            self._item_cache = {'article': []}
+        self._item_cache['article'].append(a)
+
+        if self.cache_size >= ConfigSettings.item_cache_limit:
+            embeddings: list[float] = await embed_batch(
+                self.model_name, self._item_cache['article'].copy()
+            )
+            for i, e in enumerate(embeddings):
+                self._item_cache['article'][i].emedding = e
+        return a
+
+    async def flush_items(self):
+        if self.cache_size > 0:
+            embeddings: list[float] = await embed_batch(
+                self.model_name, self._item_cache['article'].copy()
+            )
+            for i, e in enumerate(embeddings):
+                self._item_cache['article'][i].emedding = e
